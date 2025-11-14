@@ -10,6 +10,7 @@ client = MongoClient('mongodb://localhost:27017/')
 db = client['mergington_high']
 activities_collection = db['activities']
 teachers_collection = db['teachers']
+announcements_collection = db['announcements']
 
 # Methods
 
@@ -49,6 +50,11 @@ def init_database():
         for teacher in initial_teachers:
             teachers_collection.insert_one(
                 {"_id": teacher["username"], **teacher})
+    
+    # Initialize announcements if empty
+    if announcements_collection.count_documents({}) == 0:
+        for announcement in initial_announcements:
+            announcements_collection.insert_one(announcement)
 
 
 # Initial database if empty
@@ -205,5 +211,25 @@ initial_teachers = [
         "display_name": "Principal Martinez",
         "password": hash_password("admin789"),
         "role": "admin"
+    }
+]
+
+# Initial announcements for the system
+initial_announcements = [
+    {
+        "message": "📢 Activity registration is open until the end of the month. Don't lose your spot!",
+        "start_date": "2024-11-01",
+        "expiration_date": "2024-11-30",
+        "created_by": "principal",
+        "created_at": "2024-11-01T08:00:00Z",
+        "is_active": True
+    },
+    {
+        "message": "🎭 Drama Club auditions for the winter play will be held next Tuesday at 3:30 PM in the theater.",
+        "start_date": None,
+        "expiration_date": "2024-11-20",
+        "created_by": "mrodriguez",
+        "created_at": "2024-11-10T10:30:00Z",
+        "is_active": True
     }
 ]
